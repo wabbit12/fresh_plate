@@ -22,8 +22,14 @@ const Header = () => {
     document.body.scrollTo?.({ top: 0, left: 0, behavior: 'smooth' })
   }
   const handleHomeClick = (e) => {
-    scrollToTop()
-    if (pathname === '/') e.preventDefault()
+    if (pathname === '/') {
+      e.preventDefault()
+      // Clear hash so active style updates (e.g. was #trending)
+      navigate({ pathname: '/', search: location.search }, { replace: true })
+      scrollToTop()
+    } else {
+      scrollToTop()
+    }
   }
 
   // Sync search input with URL when navigating
