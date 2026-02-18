@@ -87,10 +87,10 @@ const Home = () => {
       />
       <div className="relative z-10">
         <Header />
-        <main id="home" className="px-6">
+        <main id="home" className="px-6 pt-16 lg:pt-0">
           {/* Scroll-driven hero: 4 “steps”; hero stays sticky and content changes per recipe */}
           <section id="recipe" className="scroll-mt-24" ref={scrollRef} style={{ height: `${SCROLL_HERO_HEIGHT_VH}vh` }}>
-            <div className="sticky top-0 h-screen flex items-center">
+            <div className="sticky top-16 h-[calc(100vh-4rem)] min-h-[calc(100vh-4rem)] flex items-center lg:top-0 lg:h-screen lg:min-h-0">
               <Hero recipe={activeRecipe} />
             </div>
           </section>
