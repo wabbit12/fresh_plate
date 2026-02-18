@@ -16,6 +16,16 @@ const Header = () => {
   const isRecipeActive = pathname.startsWith('/recipe')
   const isTrendingActive = pathname === '/' && hash === '#trending'
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    document.documentElement.scrollTo?.({ top: 0, left: 0, behavior: 'smooth' })
+    document.body.scrollTo?.({ top: 0, left: 0, behavior: 'smooth' })
+  }
+  const handleHomeClick = (e) => {
+    scrollToTop()
+    if (pathname === '/') e.preventDefault()
+  }
+
   // Sync search input with URL when navigating
   useEffect(() => {
     setSearchQuery(searchParams.get('q') ?? '')
@@ -57,14 +67,14 @@ const Header = () => {
         className="bg-dark-800/60 backdrop-blur-md py-3 sm:py-4 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 border-b border-white/5"
       >
         <div className="flex items-center min-w-0 flex-1">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 flex-shrink-0" onClick={handleHomeClick}>
             <img src="/assets/logo.png" alt="Fresh Plate" className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-contain" aria-hidden />
             <span className="font-display text-white font-semibold text-base sm:text-lg truncate">Fresh Plate</span>
           </Link>
         </div>
 
         <nav className="hidden lg:flex items-center gap-6 flex-shrink-0">
-          <Link to="/" className={navLinkClass(isHomeActive)}>Home</Link>
+          <Link to="/" className={navLinkClass(isHomeActive)} onClick={handleHomeClick}>Home</Link>
           <Link to="/recipe/0" className={navLinkClass(isRecipeActive)}>Recipe</Link>
           <Link to="/#trending" className={navLinkClass(isTrendingActive)}>Trending</Link>
         </nav>
@@ -136,7 +146,7 @@ const Header = () => {
                 </form>
                 <Link
                   to="/"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={(e) => { handleHomeClick(e); setMenuOpen(false); }}
                   className={`py-3 px-4 rounded-lg transition font-medium ${isHomeActive ? 'text-white bg-white/10' : 'text-gray-300 hover:bg-white/10 hover:text-white'}`}
                 >
                   Home

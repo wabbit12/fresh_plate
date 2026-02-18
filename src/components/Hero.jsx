@@ -12,16 +12,16 @@ const Hero = ({ recipe: recipeProp }) => {
 
   return (
     <section className="relative min-h-0 w-full flex flex-col overflow-hidden">
-      {/* On mobile: recipe image above hero – changes with scroll; hidden on lg */}
-      <div className="lg:hidden order-first w-full flex justify-center py-3 px-4 flex-shrink-0">
-        <AnimatePresence mode="wait">
+      {/* On mobile: recipe image above hero – crossfade when recipe changes; hidden on lg */}
+      <div className="lg:hidden order-first w-full flex-shrink-0 relative min-h-[180px] sm:min-h-[200px] py-3 px-4">
+        <AnimatePresence initial={false}>
           <motion.div
             key={recipe.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={transition}
-            className="flex justify-center"
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            className="absolute inset-0 flex justify-center items-center py-3 px-4"
           >
             {recipe.image ? (
               <img src={encodeURI(getDetailImage(recipe.image))} alt={recipe.name} className="max-h-64 sm:max-h-72 w-auto max-w-full object-contain" />

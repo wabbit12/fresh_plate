@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { useScroll } from 'framer-motion'
+import { useScroll, motion, AnimatePresence } from 'framer-motion'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
 import RecipeGrid from '../components/RecipeGrid'
@@ -60,20 +60,26 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Desktop: recipe bg image at the side – chicken rice unchanged; others bigger, no blur */}
-      <div
-        className={`hidden lg:block fixed inset-0 bg-no-repeat z-0 transition-opacity duration-300 ${heroZoneActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        style={
-          activeRecipe?.image
-            ? {
+      {/* Desktop: recipe bg image at the side – crossfade when recipe changes */}
+      <div className={`hidden lg:block fixed inset-0 z-0 overflow-hidden pointer-events-none ${heroZoneActive ? 'opacity-100' : 'opacity-0'}`} style={{ transition: 'opacity 0.3s' }} aria-hidden>
+        <AnimatePresence initial={false}>
+          {activeRecipe?.image && (
+            <motion.div
+              key={activeRecipe.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              className="absolute inset-0 bg-no-repeat"
+              style={{
                 backgroundImage: `url(${encodeURI(getDetailImage(activeRecipe.image))})`,
                 backgroundSize: activeRecipe.id === 0 ? '55%' : '70%',
                 backgroundPosition: activeRecipe.id === 0 ? '140% center' : '200% center'
-              }
-            : undefined
-        }
-        aria-hidden
-      />
+              }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
       {/* Dark overlay so hero text is more visible */}
       <div
         className={`hidden lg:block fixed inset-0 z-[1] bg-black/40 pointer-events-none transition-opacity duration-300 ${heroZoneActive ? 'opacity-100' : 'opacity-0'}`}
