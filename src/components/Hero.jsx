@@ -11,9 +11,9 @@ const Hero = ({ recipe: recipeProp }) => {
   const recipe = recipeProp ?? fallback
 
   return (
-    <section className="relative min-h-0 w-full flex flex-col overflow-hidden">
+    <section className="relative min-h-0 w-full flex flex-col overflow-visible lg:overflow-hidden">
       {/* On mobile: recipe image above hero – crossfade when recipe changes; hidden on lg. Container tall enough so image isn’t cut. */}
-      <div className="lg:hidden order-first w-full flex-shrink-0 flex justify-center py-3 px-4 overflow-visible">
+      <div className="lg:hidden order-first w-full flex-shrink-0 flex justify-center px-4 overflow-visible" style={{ paddingTop: 'clamp(0.5rem, 3vh, 1rem)', paddingBottom: 'clamp(0.5rem, 3vh, 1rem)' }}>
         <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={recipe.id}
@@ -24,9 +24,9 @@ const Hero = ({ recipe: recipeProp }) => {
             className="flex justify-center"
           >
             {recipe.image ? (
-              <img src={encodeURI(getDetailImage(recipe.image))} alt={recipe.name} className="max-h-64 sm:max-h-72 w-auto max-w-full object-contain" />
+              <img src={encodeURI(getDetailImage(recipe.image))} alt={recipe.name} className="w-auto max-w-full object-contain" style={{ maxHeight: 'clamp(140px, 25vh, 288px)' }} />
             ) : (
-              <div className={`w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br ${recipe.gradient}`} />
+              <div className={`rounded-2xl bg-gradient-to-br ${recipe.gradient}`} style={{ width: 'clamp(4rem, 8vw, 7rem)', height: 'clamp(4rem, 8vw, 7rem)' }} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -34,7 +34,7 @@ const Hero = ({ recipe: recipeProp }) => {
       {/* Hero grid: left = recipe content, right = number + Dinner Menu */}
       <div className="relative z-10 order-last lg:order-none w-full max-w-7xl mx-auto flex flex-col lg:flex-row flex-1 min-h-0 lg:min-h-[85vh]">
         {/* Left column: recipe title and content */}
-        <div className="w-full lg:w-1/2 flex items-center py-12 lg:py-24">
+        <div className="w-full lg:w-1/2 flex items-center lg:py-24" style={{ paddingTop: 'clamp(1rem, 4vh, 2rem)', paddingBottom: 'clamp(1rem, 4vh, 2rem)' }}>
           <div className="max-w-xl lg:pr-4 w-full">
             <AnimatePresence mode="wait">
               <motion.div
@@ -45,42 +45,43 @@ const Hero = ({ recipe: recipeProp }) => {
                 transition={transition}
                 className="flex flex-col justify-center"
               >
-                <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
+                <h1 className="font-playfair font-black text-white leading-none hero-title lg:text-[60px] lg:mb-4">
                   {recipe.name}
                 </h1>
 
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 lg:mb-6" style={{ marginBottom: 'clamp(0.75rem, 2vh, 1.5rem)' }}>
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
                         size={20}
-                        className={i < Math.floor(recipe.rating) ? 'text-blue-400 fill-blue-400' : 'text-blue-400/30'}
+                        className={`lg:w-5 lg:h-5 ${i < Math.floor(recipe.rating) ? 'text-blue-400 fill-blue-400' : 'text-blue-400/30'}`}
+                        style={{ width: 'clamp(14px, 4vw, 20px)', height: 'clamp(14px, 4vw, 20px)' }}
                       />
                     ))}
                   </div>
-                  <span className="text-gray-400 text-sm ml-2">{recipe.rating} ({recipe.reviews} Reviews)</span>
+                  <span className="text-gray-400 lg:text-sm ml-2" style={{ fontSize: 'clamp(0.75rem, 3vw, 0.875rem)' }}>{recipe.rating} ({recipe.reviews} Reviews)</span>
                 </div>
 
-                <div className="flex gap-4 mb-8">
+                <div className="flex gap-4 lg:mb-8" style={{ marginBottom: 'clamp(1rem, 3vh, 2rem)' }}>
                   <div className="flex flex-col items-center flex-shrink-0">
-                    <span className="text-white text-xs tracking-widest uppercase whitespace-nowrap" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)' }}>
+                    <span className="text-white tracking-widest uppercase whitespace-nowrap lg:text-xs" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', fontSize: 'clamp(0.625rem, 2vw, 0.75rem)' }}>
                       RECIPE
                     </span>
-                    <div className="w-px flex-1 min-h-[80px] bg-white mt-2" />
+                    <div className="w-px flex-1 bg-white mt-2" style={{ minHeight: 'clamp(3rem, 8vh, 5rem)' }} />
                   </div>
-                  <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+                  <p className="text-gray-300 leading-relaxed lg:text-base" style={{ fontSize: 'clamp(0.75rem, 3vw, 1rem)' }}>
                     {recipe.description}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-4 lg:mb-8" style={{ marginBottom: 'clamp(1rem, 3vh, 2rem)' }}>
                   <div className="flex -space-x-2">
-                    <img src="/images/person1.JPG" alt="" className="w-10 h-10 rounded-full object-cover border-2 border-dark-900" />
-                    <img src="/images/person2.JPG" alt="" className="w-10 h-10 rounded-full object-cover border-2 border-dark-900" />
-                    <img src="/images/person3.JPG" alt="" className="w-10 h-10 rounded-full object-cover border-2 border-dark-900" />
+                    <img src="/images/person1.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                    <img src="/images/person2.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                    <img src="/images/person3.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
                   </div>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 lg:text-sm" style={{ fontSize: 'clamp(0.75rem, 3vw, 0.875rem)' }}>
                     {recipe.peopleTried} people have tried to cook this menu
                   </p>
                 </div>
@@ -89,7 +90,8 @@ const Hero = ({ recipe: recipeProp }) => {
                   <motion.span
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition"
+                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition lg:px-8 lg:py-3 lg:text-base"
+                    style={{ paddingTop: 'clamp(0.5rem, 1.5vh, 0.75rem)', paddingBottom: 'clamp(0.5rem, 1.5vh, 0.75rem)', paddingLeft: 'clamp(1.5rem, 4vw, 2rem)', paddingRight: 'clamp(1.5rem, 4vw, 2rem)', fontSize: 'clamp(0.875rem, 3vw, 1rem)' }}
                   >
                     Cook this menu
                   </motion.span>

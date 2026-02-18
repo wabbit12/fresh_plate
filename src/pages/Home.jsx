@@ -8,20 +8,77 @@ import RecipeCard from '../components/RecipeCard'
 import { recipes, getDetailImage } from '../data/recipes'
 
 const SCROLL_HERO_STEPS = 4 // one per recipe
-const SCROLL_HERO_HEIGHT_VH = 400 // 4 * 100vh
+const SCROLL_HERO_HEIGHT_VH_DESKTOP = 400 // 4 * 100vh (fallback)
+const CONTENT_MULTIPLIER = 1.5 // multiplier to ensure enough scroll space per recipe
+const LG_BREAKPOINT_PX = 1024 // match Tailwind lg
 
 const Home = () => {
   const { hash } = useLocation()
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q')?.trim() ?? ''
   const scrollRef = useRef(null)
+  const heroContentRef = useRef(null)
+  const measureContainerRef = useRef(null)
   const [activeRecipeIndex, setActiveRecipeIndex] = useState(0)
   const [heroZoneActive, setHeroZoneActive] = useState(true)
+  const [scrollSectionHeight, setScrollSectionHeight] = useState(SCROLL_HERO_HEIGHT_VH_DESKTOP)
+  const [isLg, setIsLg] = useState(() => typeof window !== 'undefined' && window.innerWidth >= LG_BREAKPOINT_PX)
 
   const { scrollYProgress } = useScroll({
     target: scrollRef,
     offset: ['start start', 'end end']
   })
+
+  // Match Tailwind lg: only use scroll-driven sticky hero on desktop
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${LG_BREAKPOINT_PX}px)`)
+    const update = (e) => setIsLg(e.matches)
+    update(mq)
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // Measure hero content height for all recipes and set scroll section height dynamically
+  useEffect(() => {
+    if (!measureContainerRef.current) return
+    
+    const measureAllContent = () => {
+      const measureContainer = measureContainerRef.current
+      if (!measureContainer) return
+      
+      // Find all hero elements in the measure container
+      const heroElements = measureContainer.querySelectorAll('[data-hero-measure]')
+      if (heroElements.length === 0) return
+      
+      let maxContentHeight = 0
+      const viewportHeight = window.innerHeight
+      
+      heroElements.forEach((heroEl) => {
+        const height = heroEl.scrollHeight
+        maxContentHeight = Math.max(maxContentHeight, height)
+      })
+      
+      // Calculate height needed: ensure each recipe gets enough scroll space
+      // Use max content height or viewport, whichever is larger
+      const minHeightPerRecipe = Math.max(maxContentHeight, viewportHeight * 0.9)
+      const totalHeight = minHeightPerRecipe * SCROLL_HERO_STEPS * CONTENT_MULTIPLIER
+      
+      // Convert to vh
+      const heightVh = (totalHeight / viewportHeight) * 100
+      
+      // Use reasonable bounds
+      setScrollSectionHeight(Math.max(400, Math.min(1000, heightVh)))
+    }
+    
+    // Measure after a delay to ensure content is rendered
+    const timer = setTimeout(measureAllContent, 300)
+    window.addEventListener('resize', measureAllContent)
+    
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', measureAllContent)
+    }
+  }, [])
 
   // Map scroll progress (0–1) to recipe index (0–3); hide bg when past hero zone
   useEffect(() => {
@@ -88,10 +145,21 @@ const Home = () => {
       <div className="relative z-10">
         <Header />
         <main id="home" className="px-6 pt-16 lg:pt-0">
-          {/* Scroll-driven hero: 4 “steps”; hero stays sticky and content changes per recipe */}
-          <section id="recipe" className="scroll-mt-24" ref={scrollRef} style={{ height: `${SCROLL_HERO_HEIGHT_VH}vh` }}>
-            <div className="sticky top-16 h-[calc(100vh-4rem)] min-h-[calc(100vh-4rem)] flex items-center lg:top-0 lg:h-screen lg:min-h-0">
-              <Hero recipe={activeRecipe} />
+          {/* Hidden container to measure all hero content heights */}
+          <div ref={measureContainerRef} className="absolute -left-[9999px] w-screen" aria-hidden="true">
+            {recipes.slice(0, SCROLL_HERO_STEPS).map((recipe) => (
+              <div key={`measure-${recipe.id}`} data-hero-measure className="w-full px-6">
+                <Hero recipe={recipe} />
+              </div>
+            ))}
+          </div>
+          
+          {/* Scroll-driven hero: content-aware height based on actual hero content */}
+          <section id="recipe" className="scroll-mt-24" ref={scrollRef} style={{ height: `${scrollSectionHeight}vh` }}>
+            <div className={`sticky ${isLg ? 'top-0 h-screen' : 'top-16'} ${!isLg ? 'min-h-[calc(100vh-4rem)]' : ''} flex ${isLg ? 'items-center' : 'items-start'} lg:py-0 overflow-visible`} style={!isLg ? { paddingTop: 'clamp(0.5rem, 2vh, 1rem)', paddingBottom: 'clamp(0.5rem, 2vh, 1rem)' } : {}}>
+              <div ref={heroContentRef} className="w-full">
+                <Hero recipe={activeRecipe} />
+              </div>
             </div>
           </section>
           {searchQuery && (

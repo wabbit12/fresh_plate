@@ -15,3 +15,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Hero title: responsive on mobile only; desktop uses 60px, line-height 1 */
+@media (max-width: 1023px) {
+  .hero-title {
+    font-size: clamp(1.875rem, 6vw, 3rem);
+    margin-bottom: clamp(0.5rem, 2vh, 1rem);
+  }
+}
