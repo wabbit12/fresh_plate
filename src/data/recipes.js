@@ -6,7 +6,15 @@ export const recipes = [
     rating: 4.2,
     reviews: 127,
     gradient: 'from-amber-200 via-orange-100 to-yellow-100',
-    image: '/images/chicken rice.png',
+    image: '/images/chicken-rice-thumb.webp',
+    imageDetail: '/images/chicken-rice.webp',
+    gallery: [
+      '/images/gallery/chicken-rice-1.webp',
+      '/images/gallery/chicken-rice-2.webp',
+      '/images/gallery/chicken-rice-broccoli.webp',
+      '/images/gallery/steamed-rice.webp',
+    ],
+    processImage: '/images/gallery/kitchen-ingredients.webp',
     imagePlaceholder: 'Chicken, broccoli, rice',
     category: 'Dinner Menu',
     categoryNumber: '03',
@@ -39,7 +47,15 @@ export const recipes = [
     rating: 4.7,
     reviews: 120,
     gradient: 'from-amber-700 to-orange-600',
-    image: '/images/chicken adobo.png',
+    image: '/images/chicken-adobo-thumb.webp',
+    imageDetail: '/images/chicken-adobo.webp',
+    gallery: [
+      '/images/gallery/adobo-1.webp',
+      '/images/gallery/adobo-2.webp',
+      '/images/gallery/adobo-spices.webp',
+      '/images/gallery/garlic-board.webp',
+    ],
+    processImage: '/images/gallery/adobo-2.webp',
     imagePlaceholder: 'Chicken adobo with rice',
     category: 'Lunch',
     description: 'The Philippines’ most beloved dish: chicken braised in soy sauce, vinegar, garlic, and black peppercorns until tender and glossy. Savory, slightly tangy, and perfect over steamed rice.',
@@ -71,7 +87,15 @@ export const recipes = [
     rating: 4.1,
     reviews: 162,
     gradient: 'from-amber-800 to-yellow-700',
-    image: '/images/canton.png',
+    image: '/images/canton-thumb.webp',
+    imageDetail: '/images/canton.webp',
+    gallery: [
+      '/images/gallery/canton-1.webp',
+      '/images/gallery/canton-2.webp',
+      '/images/gallery/canton-stir.webp',
+      '/images/gallery/canton-pad.webp',
+    ],
+    processImage: '/images/gallery/canton-2.webp',
     imagePlaceholder: 'Pancit canton noodles',
     category: 'Lunch',
     description: 'Stir-fried egg noodles with tender slices of pork, shrimp, and crisp vegetables in a savoury sauce. A classic Filipino noodle dish for birthdays and everyday meals.',
@@ -106,7 +130,15 @@ export const recipes = [
     rating: 4.1,
     reviews: 127,
     gradient: 'from-yellow-500 to-amber-400',
-    image: '/images/lumpia.png',
+    image: '/images/lumpia-thumb.webp',
+    imageDetail: '/images/lumpia.webp',
+    gallery: [
+      '/images/gallery/lumpia-1.webp',
+      '/images/gallery/lumpia-2.webp',
+      '/images/gallery/kitchen-chili.webp',
+      '/images/gallery/kitchen-veg.webp',
+    ],
+    processImage: '/images/gallery/lumpia-2.webp',
     imagePlaceholder: 'Fried lumpia with sauce',
     category: 'Merienda',
     description: 'Crispy Filipino spring rolls filled with ground pork, carrots, and cabbage. Golden and crunchy outside, savoury and juicy inside. Serve with sweet chili or vinegar dipping sauce.',
@@ -137,11 +169,9 @@ export const recipes = [
 export const getRecipeById = (id) => recipes.find((r) => r.id === Number(id))
 export const getFeaturedRecipe = () => recipes[0]
 
-/** Returns the "2" variant image path for hero/detail (e.g. lumpia.png → lumpia2.png). Chicken rice stays original; cards keep using recipe.image. */
-export const getDetailImage = (imagePath) => {
-  if (!imagePath) return imagePath
-  if (imagePath.includes('chicken rice')) return imagePath
-  const lastDot = imagePath.lastIndexOf('.')
-  if (lastDot === -1) return imagePath + '2'
-  return imagePath.slice(0, lastDot) + '2' + imagePath.slice(lastDot)
+/** Hero/detail image; falls back to card image if imageDetail is missing. */
+export const getDetailImage = (recipe) => {
+  if (!recipe) return recipe
+  if (typeof recipe === 'string') return recipe
+  return recipe.imageDetail || recipe.image
 }

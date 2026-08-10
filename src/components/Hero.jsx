@@ -6,7 +6,7 @@ import { getFeaturedRecipe, getDetailImage } from '../data/recipes'
 
 const transition = { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
 
-const Hero = ({ recipe: recipeProp }) => {
+const Hero = ({ recipe: recipeProp, measureOnly = false }) => {
   const fallback = getFeaturedRecipe()
   const recipe = recipeProp ?? fallback
 
@@ -23,8 +23,19 @@ const Hero = ({ recipe: recipeProp }) => {
             transition={{ duration: 0.45, ease: 'easeInOut' }}
             className="flex justify-center"
           >
-            {recipe.image ? (
-              <img src={encodeURI(getDetailImage(recipe.image))} alt={recipe.name} className="w-auto max-w-full object-contain" style={{ maxHeight: 'clamp(140px, 25vh, 288px)' }} />
+            {measureOnly ? (
+              <div aria-hidden className="w-auto max-w-full" style={{ height: 'clamp(140px, 25vh, 288px)', width: 'clamp(140px, 25vh, 288px)' }} />
+            ) : recipe.image ? (
+              <img
+                src={encodeURI(getDetailImage(recipe))}
+                alt={recipe.name}
+                width={600}
+                height={600}
+                fetchPriority="high"
+                decoding="async"
+                className="w-auto max-w-full object-contain"
+                style={{ maxHeight: 'clamp(140px, 25vh, 288px)' }}
+              />
             ) : (
               <div className={`rounded-2xl bg-gradient-to-br ${recipe.gradient}`} style={{ width: 'clamp(4rem, 8vw, 7rem)', height: 'clamp(4rem, 8vw, 7rem)' }} />
             )}
@@ -77,9 +88,15 @@ const Hero = ({ recipe: recipeProp }) => {
 
                 <div className="flex items-center gap-4 lg:mb-8" style={{ marginBottom: 'clamp(1rem, 3vh, 2rem)' }}>
                   <div className="flex -space-x-2">
-                    <img src="/images/person1.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
-                    <img src="/images/person2.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
-                    <img src="/images/person3.JPG" alt="" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                    {measureOnly ? (
+                      <div aria-hidden className="rounded-full lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                    ) : (
+                      <>
+                        <img src="/images/person1.webp" alt="" width={40} height={40} loading="lazy" decoding="async" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                        <img src="/images/person2.webp" alt="" width={40} height={40} loading="lazy" decoding="async" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                        <img src="/images/person3.webp" alt="" width={40} height={40} loading="lazy" decoding="async" className="rounded-full object-cover border-2 border-dark-900 lg:w-10 lg:h-10" style={{ width: 'clamp(2rem, 5vw, 2.5rem)', height: 'clamp(2rem, 5vw, 2.5rem)' }} />
+                      </>
+                    )}
                   </div>
                   <p className="text-gray-300 lg:text-sm" style={{ fontSize: 'clamp(0.75rem, 3vw, 0.875rem)' }}>
                     {recipe.peopleTried} people have tried to cook this menu

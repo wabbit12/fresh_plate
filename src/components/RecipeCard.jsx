@@ -39,7 +39,15 @@ const RecipeCard = ({ recipe, isFirst, isLast, hasVideoAfter }) => {
       >
         <div className="w-20 h-20 rounded-full flex-shrink-0 overflow-hidden">
           {recipe.image ? (
-            <img src={encodeURI(recipe.image)} alt={recipe.name} className="w-full h-full object-cover object-center rounded-full scale-125" />
+            <img
+              src={encodeURI(recipe.image)}
+              alt={recipe.name}
+              width={80}
+              height={80}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover object-center rounded-full scale-125"
+            />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${recipe.gradient} flex items-center justify-center text-xs text-center text-white/90`}>
               {recipe.imagePlaceholder || ''}

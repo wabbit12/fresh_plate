@@ -129,7 +129,7 @@ const Home = () => {
               transition={{ duration: 0.5, ease: 'easeInOut' }}
               className="absolute inset-0 bg-no-repeat"
               style={{
-                backgroundImage: `url(${encodeURI(getDetailImage(activeRecipe.image))})`,
+                backgroundImage: `url(${encodeURI(getDetailImage(activeRecipe))})`,
                 backgroundSize: activeRecipe.id === 0 ? '55%' : '70%',
                 backgroundPosition: activeRecipe.id === 0 ? '140% center' : '200% center'
               }}
@@ -145,11 +145,11 @@ const Home = () => {
       <div className="relative z-10">
         <Header />
         <main id="home" className="px-6 pt-16 lg:pt-0">
-          {/* Hidden container to measure all hero content heights */}
+          {/* Hidden container to measure hero content heights without loading images */}
           <div ref={measureContainerRef} className="absolute -left-[9999px] w-screen" aria-hidden="true">
             {recipes.slice(0, SCROLL_HERO_STEPS).map((recipe) => (
               <div key={`measure-${recipe.id}`} data-hero-measure className="w-full px-6">
-                <Hero recipe={recipe} />
+                <Hero recipe={recipe} measureOnly />
               </div>
             ))}
           </div>
